@@ -62,7 +62,7 @@ def test_database_operation_failure():
     email = "test@example.com"  # Valid existing email
 
     # Create a mock DAO object
-    mock_dao = magic.MagicMock()
+    mock_dao = mock.MagicMock()
     mock_dao.find.side_effect = Exception("Simulated database operation failure")
 
     # Create an instance of UserController with the mock DAO
