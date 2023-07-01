@@ -32,3 +32,6 @@ data/db/
 *.coverage
 backend/.venv/
 backend/test/solutions/
+
+# results
+backend/test/report.html
