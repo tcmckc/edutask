@@ -36,5 +36,21 @@ class TestDAOIntegration(unittest.TestCase):
         self.assertEqual(result['is_active'], True)
         # Add assertions for other properties if applicable
 
+    @pytest.mark.integration
+    def test_create_missing_property(self):
+        # not complete data, raise write error
+
+    @pytest.mark.integration
+    def test_create_invalid_data_type(self):
+        # complete data, wrong type, raise write error
+
+    @pytest.mark.integration
+    def test_create_duplicate_unique_property(self):
+        # complete data, not unik, raise write error
+
+    @pytest.mark.integration
+    def test_create_empty_data(self):
+        # no data raise write error
+
 if __name__ == '__main__':
     unittest.main()
