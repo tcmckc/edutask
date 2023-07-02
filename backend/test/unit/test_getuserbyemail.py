@@ -4,6 +4,7 @@ import unittest.mock as mock
 
 from src.controllers.usercontroller import UserController
 
+@pytest.mark.unit
 def test_valid_existing_email():
     # Create a mock DAO object
     mock_dao = mock.MagicMock()
@@ -19,6 +20,7 @@ def test_valid_existing_email():
     assert user is not None
     assert user['name'] == 'John'
 
+@pytest.mark.unit
 def test_valid_existing_email_multiple_users():
     # Create a mock DAO object
     mock_dao = mock.MagicMock()
@@ -33,7 +35,7 @@ def test_valid_existing_email_multiple_users():
 
     assert 'Error: more than one user found with mail test@example.com' in str(e.value)
 
-
+@pytest.mark.unit
 def test_valid_non_existing_email():
     # Create a mock DAO object
     mock_dao = mock.MagicMock()
@@ -48,6 +50,7 @@ def test_valid_non_existing_email():
     # Assertions
     assert user is None
 
+@pytest.mark.unit
 def test_invalid_email_format():
     email = "invalid_email"  # Invalid email format
 
@@ -58,6 +61,7 @@ def test_invalid_email_format():
     with pytest.raises(ValueError):
         user_controller.get_user_by_email(email)
 
+@pytest.mark.unit
 def test_database_operation_failure():
     email = "test@example.com"  # Valid existing email
 
