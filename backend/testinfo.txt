@@ -1,8 +1,0 @@
-Use command in backend (and you dont se the results of demo tests)
-pytest -k "not demo"
-
-Install: pip install pytest-html
-
-run 
-pytest -k "not demo" --html=report.html
-And a goog looking report is created in this folder
