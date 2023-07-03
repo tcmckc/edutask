@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 import pytest
 from pymongo import MongoClient
+from pymongo.errors import WriteError
 
 from src.util.dao import DAO
 
@@ -15,6 +16,8 @@ def mongo_database():
 
     # Clean up the test database after the test session
     client.drop_database('test_database')
+
+# todo if time: make a better not hard-coded validation and test
 
 @pytest.fixture
 def sut(mongo_database):
@@ -36,7 +39,8 @@ def sut(mongo_database):
                     },
                     "email": {
                         "bsonType": "string",
-                        "description": "the email address of a user must be determined"
+                        "description": "the email address of a user must be determined",
+                        "unique": True
                     }
                 }
             }
@@ -47,16 +51,11 @@ def sut(mongo_database):
 
         return dao
 
-
+# complete data, return object
 @pytest.mark.integration
 def test_create_valid_data(sut):
     # Arrange
-    data = {
-        'firstName': 'Adam',
-        'lastName': 'Adamsson',
-        'email': 'adam@adamsson.se'
-        # Add other required properties and compliant property values as needed
-    }
+    data = {'firstName': 'Adam', 'lastName': 'Adamsson', 'email': 'adam@adamsson.se'}
 
     # Act
     result = sut.create(data)
@@ -68,20 +67,45 @@ def test_create_valid_data(sut):
     assert result['email'] == 'adam@adamsson.se'
     assert result ['_id'] is not None
 
+# not complete data, raise write error
+@pytest.mark.integration
+def test_create_missing_property(sut):
+    # Arrange
+    data = {'firstName': 'Adam', 'email': 'adam@adamsson.se'}
 
-# @pytest.mark.integration
-# def test_create_missing_property(self):
-#     # not complete data, raise write error
+    # Act
+    with pytest.raises(WriteError):
+        sut.create(data)
 
-# @pytest.mark.integration
-# def test_create_invalid_data_type(self):
-#     # complete data, wrong type, raise write error
+# complete data, wrong type, raise write error
+@pytest.mark.integration
+def test_create_invalid_data_type(sut):
+    # Arrange
+    data = {'firstName': 'Adam', 'city': 'Ankeborg', 'email': 'adam@adamsson.se'}
 
-# @pytest.mark.integration
-# def test_create_duplicate_unique_property(self):
-#     # complete data, not unik, raise write error
+    # Act
+    with pytest.raises(WriteError):
+        sut.create(data)
 
-# @pytest.mark.integration
-# def test_create_empty_data(self):
-#     # no data raise write error
+# complete data, not unik, raise write error
+@pytest.mark.integration
+def test_create_duplicate_unique_property(sut):
+    data = {'firstName': 'Adam', 'lastName': 'Adamsson', 'email': 'adam@adamsson.se'}
+
+    # Insert a document with the same email into the collection
+    result = sut.create(data)
+
+    # Act
+    with pytest.raises(WriteError):
+        sut.create(data)
+
+# no data raise write error
+@pytest.mark.integration
+def test_create_empty_data(sut):
+    data = {}
+
+    # Act
+    with pytest.raises(WriteError):
+        sut.create(data)
+
 
