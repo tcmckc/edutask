@@ -10,7 +10,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    defaults:
+    env:
       working-directory: ./backend
 
     steps:
