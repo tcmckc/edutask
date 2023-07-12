@@ -11,8 +11,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    env:
-      working-directory: ./backend
+    # env:
+    #   working-directory: ./backend
 
     steps:
       - uses: actions/checkout@v3
