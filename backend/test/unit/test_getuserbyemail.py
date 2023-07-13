@@ -21,7 +21,7 @@ def test_valid_existing_email():
     assert user['name'] == 'John'
 
 @pytest.mark.unit
-def test_valid_existing_email_multiple_users():
+def test_valid_existing_email_multiple_users(capfd):
     # Create a mock DAO object
     mock_dao = mock.MagicMock()
     mock_dao.find.return_value = [{'name': 'John', 'email': 'test@example.com'}, {'name': 'Jane', 'email': 'test@example.com'}]
@@ -29,11 +29,15 @@ def test_valid_existing_email_multiple_users():
     # Create an instance of UserController with the mock DAO
     user_controller = UserController(dao=mock_dao)
 
-    # Call the method being tested and assert the exception message
-    with pytest.raises(Exception) as e:
-        user_controller.get_user_by_email('test@example.com')
+    # Call the method being tested and assert the exception message / updated test assignment 6
+    user_controller.get_user_by_email('test@example.com')
 
-    assert 'Error: more than one user found with mail test@example.com' in str(e.value)
+    # Capture the printed output / updated in assigment 6
+    captured = capfd.readouterr()
+
+    # Assert that the error message is returned / updated test asignment 6
+    expected_message = 'Error: more than one user found with mail test@example.com'
+    assert expected_message in captured.out
 
 @pytest.mark.unit
 def test_valid_non_existing_email():
